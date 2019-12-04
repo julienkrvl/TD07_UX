@@ -1,44 +1,42 @@
+// =========================================================
+// * Vuetify Material Dashboard - v1.0.0
+// =========================================================
+
+// * Product Page: https://www.creative-tim.com/product/vuetify-material-dashboard
+// * Copyright 2019 Creative Tim (https://www.creative-tim.com)
+// * Licenses under MIT
+
+// * Coded by Creative Tim
+
+// =========================================================
+
+// * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-import App from './App.vue'
-import BootstrapVue from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-// eslint-disable-next-line
-import { library } from '@fortawesome/fontawesome-svg-core'
-// eslint-disable-next-line
-import { faPen } from '@fortawesome/free-solid-svg-icons'
-// eslint-disable-next-line
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
-// eslint-disable-next-line
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+// Components
+import './components'
 
-library.add(faPen)
-library.add(faCheck)
-library.add(faTrash)
-Vue.component('font-awesome-icon', FontAwesomeIcon)
+// Plugins
+import './plugins'
+import { sync } from 'vuex-router-sync'
 
-// LightBootstrap plugin
-import LightBootstrap from './light-bootstrap-main'
+// Application imports
+import App from './App'
+import router from '@/router'
+import store from '@/store'
 
-// router setup
-import routes from './routes/routes'
-// plugin setup
-Vue.use(VueRouter)
-Vue.use(LightBootstrap)
-Vue.use(BootstrapVue)
+// Sync store with router
+sync(store, router)
 
-// configure router
-const router = new VueRouter({
-  routes, // short for routes: routes
-  linkActiveClass: 'nav-item active'
-})
+Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  render: h => h(App),
-  router
-})
+  router,
+  store,
+  render: h => h(App)
+}).$mount('#app')
