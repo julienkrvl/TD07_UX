@@ -721,3 +721,110 @@ contract ERC721 is Context, ERC165, IERC721 {
         }
     }
 }
+
+library Roles {
+    struct Role {
+        mapping (address => bool) bearer;
+    }
+
+    /**
+     * @dev Give an account access to this role.
+     */
+    function add(Role storage role, address account) internal {
+        require(!has(role, account), "Roles: account already has role");
+        role.bearer[account] = true;
+    }
+
+    /**
+     * @dev Remove an account's access to this role.
+     */
+    function remove(Role storage role, address account) internal {
+        require(has(role, account), "Roles: account does not have role");
+        role.bearer[account] = false;
+    }
+
+    /**
+     * @dev Check if an account has this role.
+     * @return bool
+     */
+    function has(Role storage role, address account) internal view returns (bool) {
+        require(account != address(0), "Roles: account is the zero address");
+        return role.bearer[account];
+    }
+}
+
+contract MinterRole {
+    using Roles for Roles.Role;
+
+    event MinterAdded(address indexed account);
+    event MinterRemoved(address indexed account);
+
+    Roles.Role private _minters;
+
+    constructor () internal {
+        _addMinter(msg.sender);
+    }
+
+    modifier onlyMinter() {
+        require(isMinter(msg.sender), "MinterRole: caller does not have the Minter role");
+        _;
+    }
+
+    function isMinter(address account) public view returns (bool) {
+        return _minters.has(account);
+    }
+
+    function addMinter(address account) public onlyMinter {
+        _addMinter(account);
+    }
+
+    function renounceMinter() public {
+        _removeMinter(msg.sender);
+    }
+
+    function _addMinter(address account) internal {
+        _minters.add(account);
+        emit MinterAdded(account);
+    }
+
+    function _removeMinter(address account) internal {
+        _minters.remove(account);
+        emit MinterRemoved(account);
+    }
+}
+
+contract ERC721Mintable is ERC721, MinterRole {
+    /**
+     * @dev Function to mint tokens.
+     * @param to The address that will receive the minted token.
+     * @param tokenId The token id to mint.
+     * @return A boolean that indicates if the operation was successful.
+     */
+    function mint(address to, uint256 tokenId) public onlyMinter returns (bool) {
+        _mint(to, tokenId);
+        return true;
+    }
+
+    /**
+     * @dev Function to safely mint tokens.
+     * @param to The address that will receive the minted token.
+     * @param tokenId The token id to mint.
+     * @return A boolean that indicates if the operation was successful.
+     */
+    function safeMint(address to, uint256 tokenId) public onlyMinter returns (bool) {
+        _safeMint(to, tokenId);
+        return true;
+    }
+
+    /**
+     * @dev Function to safely mint tokens.
+     * @param to The address that will receive the minted token.
+     * @param tokenId The token id to mint.
+     * @param _data bytes data to send along with a safe transfer check.
+     * @return A boolean that indicates if the operation was successful.
+     */
+    function safeMint(address to, uint256 tokenId, bytes memory _data) public onlyMinter returns (bool) {
+        _safeMint(to, tokenId, _data);
+        return true;
+    }
+}
