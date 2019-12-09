@@ -1,6 +1,6 @@
 // This should have been deployed to Remix
 // We will be using Solidity version 0.5.3
-pragma solidity 0.5.3;
+pragma solidity 0.5.13;
 // Importing OpenZeppelin's ERC-721 Implementation
 import 'https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/token/ERC721/ERC721Full.sol';
 // Importing OpenZeppelin's SafeMath Implementation
