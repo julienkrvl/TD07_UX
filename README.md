@@ -1,4 +1,10 @@
-# npm install
+# Installation
+
+`git clone https://github.com/julienkrvl/TD07_UX.git`
+
+`npm install`
+
+`npm run dev`
 
 # Tuto suivi 1 : https://medium.com/openberry/compile-and-deploy-using-remix-ide-f58fcc662ed0
 
